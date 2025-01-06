@@ -7,18 +7,22 @@ public class ImpulseMovementState : EntityBaseState
     private Vector3 impulseDirection;
     private float impulseForce;
     private Vector3 origin;
-    private Vector3 direction = Vector3.right;
+    private Vector3 direction = Vector3.forward;
     private RaycastHit hit;
     private float maxDistance = 2f;
+ 
 
-
-    public ImpulseMovementState(Rigidbody rb, Vector3 impulseDirection, float impulseForce, Vector3 origin, Vector3 direction)
+    public ImpulseMovementState(EntityStateMachine stateMachine, Rigidbody rb, Vector3 impulseDirection, float impulseForce, Vector3 origin, Vector3 direction)
     {
+        this.stateMachine = stateMachine;
         this.rb = rb;
         this.impulseDirection = impulseDirection;
         this.impulseForce = impulseForce;
         this.origin = origin;
         this.direction = direction;
+        stateMachine.LastDirection = direction;
+        stateMachine.LastOrigin = origin;
+
     }
 
     private bool isFacingObstacle()
@@ -41,12 +45,12 @@ public class ImpulseMovementState : EntityBaseState
     public override void Enter()
     {
         rb.AddForce(impulseDirection * impulseForce, ForceMode.Impulse);
-        Debug.Log("State Switched!");
     }
 
     public override void Update()
     {
-        if (isFacingObstacle()) Debug.Log("Obstacle detected!");
+        if (isFacingObstacle()) 
+            stateMachine.ChangeState(new ScanningState(stateMachine, rb, 10f, 45f));
 
 
     }

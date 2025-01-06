@@ -27,7 +27,7 @@ public class AriaBall : MonoBehaviour
         Vector3 origin = transform.position;
         Vector3 direction = impulseDirection;
 
-        stateMachine.ChangeState(new ImpulseMovementState(rb, impulseDirection, impulseForce, origin, direction));
+        stateMachine.ChangeState(new ImpulseMovementState(stateMachine, rb, impulseDirection, impulseForce, origin, direction));
     }
 
 }
