@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EntityStateMachine : MonoBehaviour
 {
-    private EntityBaseState _currentState;
+    [SerializeReference] private EntityBaseState _currentState;
     private EntityBaseState _previousState;
     public Vector3 LastDirection { get; set; }
     public Vector3 LastOrigin { get; set; }

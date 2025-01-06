@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+[Serializable]
 
 public class ScanningState : EntityBaseState
 {
@@ -7,7 +9,8 @@ public class ScanningState : EntityBaseState
     private Vector3 direction;
     private Rigidbody rb;
     private float scanRange;
-    private float rotationSpeed;
+    [SerializeField] private float rotationSpeed;
+    private float time = 1;
 
     public ScanningState(EntityStateMachine stateMachine, Rigidbody rb, float scanRange, float rotationSpeed)
     {
@@ -19,39 +22,42 @@ public class ScanningState : EntityBaseState
         this.rotationSpeed = rotationSpeed;
     }
 
-    public void rotate()
+    private void Decelerate()
     {
-        direction = Quaternion.Euler(0, rotationSpeed * Time.deltaTime, 0) * direction;
+        if (rb.linearVelocity.magnitude != 0)
+        {
+            Vector3 deceleration = rb.linearVelocity.normalized * (time * Time.deltaTime);
+            rb.linearVelocity -= deceleration;
+            if (rb.linearVelocity.magnitude < 0)
+            {
+                rb.linearVelocity = Vector3.zero;
+            }
+        }
+    }
+    private bool isNotMoving()
+    {
+        return rb.linearVelocity.magnitude < 0.1f;
     }
 
-    public bool isLookingAtObstacle()
+    private void Rotate()
     {
-        Vector3 scanOrigin = origin + Vector3.up * 0.5f;
-        Debug.DrawRay(scanOrigin, direction * scanRange, Color.blue);
-
-        if (Physics.Raycast(scanOrigin, direction, out RaycastHit hit, scanRange))
-            return true;
-
-        return false;
-           
+        float rotationStep = rotationSpeed * Time.deltaTime;
+        rb.transform.Rotate(0, rotationStep, 0); 
     }
+
 
     public override void Enter() 
     {
         Debug.Log("Scanning!");
+        
     }
 
     public override void Update()
     {
-        if (!isLookingAtObstacle()) 
-        {            
-            stateMachine.ReturnToPreviousState();
-        }
-        else
-        {
-            rb.linearVelocity = Vector3.zero;
-            rotate();
-        }
+        Decelerate();
+        if(isNotMoving())
+            Rotate();
+
     }
 
     public override void Exit() { }

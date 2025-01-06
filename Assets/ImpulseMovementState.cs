@@ -22,7 +22,6 @@ public class ImpulseMovementState : EntityBaseState
         this.direction = direction;
         stateMachine.LastDirection = direction;
         stateMachine.LastOrigin = origin;
-
     }
 
     private bool isFacingObstacle()
