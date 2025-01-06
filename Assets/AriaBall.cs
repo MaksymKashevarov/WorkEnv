@@ -9,7 +9,7 @@ public class AriaBall : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private EntityStateMachine stateMachine;
     [Header("Entity Movement Settings")]
-    [SerializeField] private Vector3 impulseDirection = new Vector3(1, 0, 0);
+    [SerializeField] private Vector3 impulseDirection = Vector3.forward;
     [SerializeField] private float impulseForce = 1.0f;
 
     private void Start()
@@ -24,7 +24,10 @@ public class AriaBall : MonoBehaviour
 
     private void Move()
     {
-        stateMachine.ChangeState(new ImpulseMovementState(rb, impulseDirection, impulseForce));
+        Vector3 origin = transform.position;
+        Vector3 direction = impulseDirection;
+
+        stateMachine.ChangeState(new ImpulseMovementState(rb, impulseDirection, impulseForce, origin, direction));
     }
 
 }
