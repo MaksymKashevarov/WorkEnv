@@ -50,8 +50,6 @@ public class ImpulseMovementState : EntityBaseState
     {
         if (isFacingObstacle()) 
             stateMachine.ChangeState(new ScanningState(stateMachine, rb, 10f, 45f));
-
-
     }
 
     public override void Exit()
